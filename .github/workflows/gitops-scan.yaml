@@ -1,0 +1,38 @@
+name: "Run Container Scan on Super Mario Docker Image with Quality Gate"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run_container_image_scan_on_supermario_docker_image:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Calculate version dynamically
+      - name: Get version from file
+        id: version
+        run: echo "VERSION=$(($(cat version.txt) + 1))" >> $GITHUB_ENV
+
+      # Step 3: Login to Docker Hub
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      # Step 4: Pull Docker image and save as tarball
+      - name: Get Docker Image from Docker Hub
+        run: |
+          docker pull docker.io/prasadkasthuri/biamario:${{ env.VERSION }}
+          docker save -o supermariolatestdockerimage.tar docker.io/prasadkasthuri/biamario:${{ env.VERSION }}
+
+      # Step 5: Run Trivy vulnerability scanner on the tarball
+      - name: Run Trivy vulnerability scanner in tarball mode
+        uses: aquasecurity/trivy-action@0.11.2  # Replace 'master' with a stable version
+        with:
+          input: supermariolatestdockerimage.tar
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
