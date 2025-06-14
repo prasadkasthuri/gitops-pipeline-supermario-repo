@@ -22,5 +22,5 @@ jobs:
  
       - name: Build and Push Docker Image
         run: |
-          docker build -t docker.io/prasadkasthuri/ supermariogame:${{ env.VERSION }} .
-          docker push docker.io/prasadkasthuri/ supermariogame:${{ env.VERSION }}
+          docker build -t docker.io/prasadkasthuri/biamario:${{ env.VERSION }} .
+          docker push docker.io/prasadkasthuri/biamario:${{ env.VERSION }}
