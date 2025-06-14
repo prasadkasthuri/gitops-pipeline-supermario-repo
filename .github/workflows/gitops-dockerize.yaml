@@ -19,5 +19,5 @@ jobs:
  
       - name: Build and Push Docker Image
         run: |
-          docker build -t docker.io/prasadkasthuri/biamario:1 .
-          docker push docker.io/prasadkasthuri/biamario:1
+          docker build -t docker.io/prasadkasthuri/biamario:20 .
+          docker push docker.io/prasadkasthuri/biamario:20
